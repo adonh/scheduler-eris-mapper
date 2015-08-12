@@ -2,11 +2,11 @@ organization := "com.pagerduty"
 
 name := "eris-mapper"
 
-scalaVersion := "2.10.5"
+scalaVersion := "2.10.4"
 
 libraryDependencies ++= Seq(
-  "com.pagerduty" %% "eris-core" % "0.2" % "compile->compile;test->test",
-  "com.pagerduty" %% "mapper" % "0.2")
+  "com.pagerduty" %% "eris-core" % "0.4" % "compile->compile;test->test",
+  "com.pagerduty" %% "mapper" % "0.4")
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % Test,

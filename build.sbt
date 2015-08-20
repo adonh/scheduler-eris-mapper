@@ -6,7 +6,7 @@ scalaVersion := "2.10.4"
 
 libraryDependencies ++= Seq(
   "com.pagerduty" %% "eris-core" % "0.4.1" % "compile->compile;test->test",
-  "com.pagerduty" %% "mapper" % "0.4.1")
+  "com.pagerduty" %% "entity-mapper" % "0.4.1")
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % Test,

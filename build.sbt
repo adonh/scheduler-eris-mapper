@@ -5,7 +5,7 @@ name := "eris-mapper"
 scalaVersion := "2.10.4"
 
 libraryDependencies ++= Seq(
-  "com.pagerduty" %% "eris-core" % "0.4.1" % "compile->compile;test->test",
+  "com.pagerduty" %% "eris-core" % "1.0.0" % "compile->compile;test->test",
   "com.pagerduty" %% "entity-mapper" % "0.4.1")
 
 libraryDependencies ++= Seq(

@@ -66,7 +66,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       }
 
       "write/read entity" in {
-        val cluster = TestCluster.cluster
+        val cluster = TestClusterCtx.cluster
         val keyspace = cluster.getKeyspace("EntityMapperSpecId")
         val cfModel = ColumnFamilyModel[TimeUuid, String, String](
           keyspace, "entityCf", columns = mapper.columns)
@@ -99,7 +99,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       }
 
       "write/read entity" in {
-        val cluster = TestCluster.cluster
+        val cluster = TestClusterCtx.cluster
         val keyspace = cluster.getKeyspace("EntityMapperSpecId")
         val cfModel = ColumnFamilyModel[TimeUuid, String, String](
           keyspace, "entityCf", columns = mapper.columns)

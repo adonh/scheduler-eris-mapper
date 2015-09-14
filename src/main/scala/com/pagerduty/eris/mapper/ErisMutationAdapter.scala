@@ -1,12 +1,10 @@
 package com.pagerduty.eris.mapper
 
 import java.nio.ByteBuffer
-import java.util.logging.{Level, Logger}
-
 import com.netflix.astyanax.{Serializer, ColumnListMutation}
 import com.pagerduty.mapper.{EntityMapperException, MutationAdapter}
-
 import scala.util.control.NonFatal
+
 
 /**
  * Eris implementation of [[MutationAdapter]].

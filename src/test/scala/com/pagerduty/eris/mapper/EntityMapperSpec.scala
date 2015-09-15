@@ -1,7 +1,5 @@
 package com.pagerduty.eris.mapper
 
-import java.util.logging.{Level, Logger}
-
 import com.pagerduty.eris.schema.SchemaLoader
 import com.pagerduty.eris._
 import org.scalatest.{Matchers, FreeSpec}
@@ -33,7 +31,7 @@ package test {
 }
 
 class EntityMapperSpec extends FreeSpec with Matchers {
-  Logger.getLogger("com.pagerduty.eris.schema.SchemaLoader").setLevel(Level.OFF)
+  TestLoggingConfig.setup()
 
   "EntityMapper should" - {
     "detect when there is no TTL" in {

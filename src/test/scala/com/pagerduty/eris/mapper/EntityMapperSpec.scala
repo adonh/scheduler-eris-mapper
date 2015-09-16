@@ -31,8 +31,6 @@ package test {
 }
 
 class EntityMapperSpec extends FreeSpec with Matchers {
-  TestLoggingConfig.setup()
-
   "EntityMapper should" - {
     "detect when there is no TTL" in {
       type Entity = test.SimpleEntityWithoutId

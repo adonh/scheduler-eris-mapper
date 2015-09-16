@@ -12,7 +12,7 @@ ivyConfigurations += config("transient").hide
 fullClasspath in Test ++= update.value.select(configurationFilter("transient"))
 
 libraryDependencies ++= Seq(
-  "com.pagerduty" %% "eris-core" % "1.1.0" % "compile->compile;test->test",
+  "com.pagerduty" %% "eris-core" % "1.2.0" % "compile->compile;test->test",
   "com.pagerduty" %% "entity-mapper" % "0.4.2")
 
 libraryDependencies ++= Seq(

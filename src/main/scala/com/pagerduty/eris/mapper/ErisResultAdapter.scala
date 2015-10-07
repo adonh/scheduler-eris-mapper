@@ -3,7 +3,7 @@ package com.pagerduty.eris.mapper
 import java.nio.ByteBuffer
 
 import com.netflix.astyanax.Serializer
-import com.netflix.astyanax.model.ColumnList
+import com.netflix.astyanax.model.{Column, ColumnList}
 import com.pagerduty.mapper.{EntityMapperException, ResultAdapter}
 import scala.util.control.NonFatal
 
@@ -11,11 +11,11 @@ import scala.util.control.NonFatal
  * Eris implementation of [[ResultAdapter]]
  */
 private[mapper] class ErisResultAdapter(result: ColumnList[String]) extends ResultAdapter {
-  private def deserialize(targetId: Any, colName: String, serializer: Any, bytes: ByteBuffer)
+  private def deserialize(targetId: Any, colName: String, serializer: Any, column: Column[String])
   : Any = {
     try {
       val usableSerializer = serializer.asInstanceOf[Serializer[Any]]
-      usableSerializer.fromByteBuffer(bytes)
+      column.getValue(usableSerializer)
     }
     catch { // Adding columnName to exception message to simplify debugging.
       case e: ClassCastException =>
@@ -27,8 +27,8 @@ private[mapper] class ErisResultAdapter(result: ColumnList[String]) extends Resu
     }
   }
   override def get(targetId: Any, colName: String, serializer: Any): Option[Any] = {
-    Option(result.getByteBufferValue(colName, null)).map { bytes =>
-      deserialize(targetId, colName, serializer, bytes)
+    Option(result.getColumnByName(colName)).map { column =>
+      deserialize(targetId, colName, serializer, column)
     }
   }
 }

@@ -116,4 +116,54 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       }
     }
   }
+
+  "Adapters should" - {
+    type Entity = test.SimpleEntityWithoutId
+    val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
+    val id = TimeUuid()
+
+    "write/read null fields correctly" in {
+      val cluster = TestClusterCtx.cluster
+      val keyspace = cluster.getKeyspace("EntityMapperSpecIdRWN")
+      val cfModel = ColumnFamilyModel[TimeUuid, String, String](
+        keyspace, "entityCf", columns = mapper.columns)
+      val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
+      schemaLoader.dropSchema()
+      schemaLoader.loadSchema()
+
+      val entity = new Entity(null, 1, "t1")
+      val mutationBatch = keyspace.prepareMutationBatch()
+      val rowMutation = mutationBatch.withRow(cfModel.columnFamily, id)
+      mapper.write(id, entity, rowMutation)
+      Await.result(mutationBatch.executeAsync(), 5.seconds)
+
+      val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
+      val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
+      val loaded = Await.result(readFuture, 5.seconds)
+
+      loaded shouldBe Some(entity.copy(field0 = "default0", transient = "defaultTransient"))
+    }
+
+    "write/read fields serialized as empty byte buffer correctly" in {
+      val cluster = TestClusterCtx.cluster
+      val keyspace = cluster.getKeyspace("EntityMapperSpecIdRWE")
+      val cfModel = ColumnFamilyModel[TimeUuid, String, String](
+        keyspace, "entityCf", columns = mapper.columns)
+      val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
+      schemaLoader.dropSchema()
+      schemaLoader.loadSchema()
+
+      val entity = new Entity("", 1, "t1")
+      val mutationBatch = keyspace.prepareMutationBatch()
+      val rowMutation = mutationBatch.withRow(cfModel.columnFamily, id)
+      mapper.write(id, entity, rowMutation)
+      Await.result(mutationBatch.executeAsync(), 5.seconds)
+
+      val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
+      val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
+      val loaded = Await.result(readFuture, 5.seconds)
+
+      loaded shouldBe Some(entity.copy(transient = "defaultTransient"))
+    }
+  }
 }

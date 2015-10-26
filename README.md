@@ -6,7 +6,7 @@ This is an open source project!
 
 ## Description
 
-Eris-mapper is an implementation of [entity-mapper API](https://github.com/PagerDuty/entity-mapper) with [Eris driver](https://github.com/PagerDuty/eris-core).
+Eris-mapper is an implementation of [Entity-mapper API](https://github.com/PagerDuty/entity-mapper) using [Eris driver](https://github.com/PagerDuty/eris-core).
 
 
 ## Installation

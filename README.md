@@ -9,8 +9,12 @@ Eris-mapper is an implementation of [Entity-mapper API](https://github.com/Pager
 
 ## Installation
 
-This library is published to the Sonatype OSS Maven Repository, which is configured in SBT by default. To add the dependency to your SBT build file:
+This library is published to the Sonatype OSS Maven Repository:
+```scala
+resolvers += Resolver.sonatypeRepo("public")
+```
 
+Adding the dependency to your SBT build file:
 ```scala
 libraryDependencies += "com.pagerduty" %% "eris-mapper" % "1.5.0"
 ```

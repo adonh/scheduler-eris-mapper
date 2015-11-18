@@ -16,7 +16,7 @@ resolvers += Resolver.sonatypeRepo("public")
 
 Adding the dependency to your SBT build file:
 ```scala
-libraryDependencies += "com.pagerduty" %% "eris-mapper" % "1.5.0"
+libraryDependencies += "com.pagerduty" %% "eris-mapper" % "1.5.1"
 ```
 
 ## Contact

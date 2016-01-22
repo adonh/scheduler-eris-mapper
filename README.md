@@ -1,4 +1,4 @@
-# eris-mapper [![Build Status](https://travis-ci.org/PagerDuty/eris-mapper.svg)](https://travis-ci.org/PagerDuty/eris-mapper)
+# eris-mapper [![Build Status](https://travis-ci.org/PagerDuty/eris-mapper.svg?branch=master)](https://travis-ci.org/PagerDuty/eris-mapper/builds)
 
 This is an open source project!
 
@@ -16,7 +16,7 @@ resolvers += "bintray-pagerduty-oss-maven" at "https://dl.bintray.com/pagerduty/
 
 Adding the dependency to your SBT build file:
 ```scala
-libraryDependencies += "com.pagerduty" %% "eris-mapper" % "1.6.0"
+libraryDependencies += "com.pagerduty" %% "eris-mapper" % "1.6.1"
 ```
 
 ## Contact

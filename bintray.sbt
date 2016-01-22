@@ -9,13 +9,6 @@ publishMavenStyle := true
 
 pomExtra := (
   <url>https://github.com/PagerDuty/eris-mapper</url>
-  <licenses>
-    <license>
-      <name>BSD New</name>
-      <url>https://opensource.org/licenses/BSD-3-Clause</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
   <scm>
     <url>git@github.com:PagerDuty/eris-mapper.git</url>
     <connection>scm:git:git@github.com:PagerDuty/eris-mapper.git</connection>

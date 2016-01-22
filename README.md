@@ -1,4 +1,4 @@
-# eris-mapper [![Build Status](https://travis-ci.org/PagerDuty/eris-mapper.svg)](https://travis-ci.org/PagerDuty/eris-mapper)
+# eris-mapper [![Build Status](https://travis-ci.org/PagerDuty/eris-mapper.svg?branch=master)](https://travis-ci.org/PagerDuty/eris-mapper/builds)
 
 This is an open source project!
 

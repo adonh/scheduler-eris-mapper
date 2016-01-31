@@ -29,12 +29,11 @@ package com.pagerduty.eris.mapper
 
 import java.lang.annotation.Annotation
 
-import com.netflix.astyanax.{Serializer, ColumnListMutation}
+import com.netflix.astyanax.{ Serializer, ColumnListMutation }
 import com.netflix.astyanax.model.ColumnList
 import com.pagerduty.eris.ColumnModel
 import com.pagerduty.eris.serializers.ValidatorClass
 import com.pagerduty.mapper._
-
 
 /**
  * Allows to read objects from Astyanax row results and write objects to Astyanax mutation batch.
@@ -42,13 +41,14 @@ import com.pagerduty.mapper._
 class EntityMapper[Id, Entity](
     entityClass: Class[Entity],
     registeredSerializers: Map[Class[_], Serializer[_]],
-    customMappers: Map[Class[_ <: Annotation], Mapping => Mapping] = Map.empty)
-{
+    customMappers: Map[Class[_ <: Annotation], Mapping => Mapping] = Map.empty
+) {
   /**
    * Entity mapping that handles translation of individual fields.
    */
   protected val mapping = EntityMapping[Id, Entity](
-    entityClass, registeredSerializers, customMappers)
+    entityClass, registeredSerializers, customMappers
+  )
 
   /**
    * The value of @Ttl annotation, if defined.
@@ -76,11 +76,11 @@ class EntityMapper[Id, Entity](
    * @param ttlSeconds ttl in seconds, defaults to entity @Ttl
    */
   def write(
-      targetId: Id,
-      entity: Entity,
-      mutation: ColumnListMutation[String],
-      ttlSeconds: Option[Int] = this.ttlSeconds)
-  : Unit = {
+    targetId: Id,
+    entity: Entity,
+    mutation: ColumnListMutation[String],
+    ttlSeconds: Option[Int] = this.ttlSeconds
+  ): Unit = {
     mapping.write(targetId, Some(entity), new ErisMutationAdapter(mutation), ttlSeconds)
   }
 

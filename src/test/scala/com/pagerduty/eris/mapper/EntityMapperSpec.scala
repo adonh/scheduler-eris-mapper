@@ -29,7 +29,7 @@ package com.pagerduty.eris.mapper
 
 import com.pagerduty.eris.schema.SchemaLoader
 import com.pagerduty.eris._
-import org.scalatest.{Matchers, FreeSpec}
+import org.scalatest.{ Matchers, FreeSpec }
 import com.pagerduty.mapper.annotations._
 import com.pagerduty.eris.serializers._
 import FutureConversions._
@@ -37,22 +37,21 @@ import scala.concurrent.duration._
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 package test {
   @Entity @Ttl(seconds = 40) case class SimpleEntityWithId(
       @Id id: TimeUuid,
       @Column(name = "f0") field0: String,
       @Column(name = "f1") field1: Int,
-      transient: String)
-  {
+      transient: String
+  ) {
     def this() = this(null, "default0", 0, "defaultTransient")
   }
 
   @Entity case class SimpleEntityWithoutId(
       @Column(name = "f0") field0: String,
       @Column(name = "f1") field1: Int,
-      transient: String)
-  {
+      transient: String
+  ) {
     def this() = this("default0", 0, "defaultTransient")
   }
 }
@@ -74,7 +73,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
     "auto-detect columns" in {
       type Entity = test.SimpleEntityWithId
       val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
-      mapper.columns should contain allOf(ColumnModel[String]("f0"), ColumnModel[Int]("f1"))
+      mapper.columns should contain allOf (ColumnModel[String]("f0"), ColumnModel[Int]("f1"))
     }
 
     "when there is Id" - {
@@ -92,7 +91,8 @@ class EntityMapperSpec extends FreeSpec with Matchers {
         val cluster = TestClusterCtx.cluster
         val keyspace = cluster.getKeyspace("EntityMapperSpecId")
         val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-          keyspace, "entityCf", columns = mapper.columns)
+          keyspace, "entityCf", columns = mapper.columns
+        )
         val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
         schemaLoader.dropSchema()
         schemaLoader.loadSchema()
@@ -125,7 +125,8 @@ class EntityMapperSpec extends FreeSpec with Matchers {
         val cluster = TestClusterCtx.cluster
         val keyspace = cluster.getKeyspace("EntityMapperSpecId")
         val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-          keyspace, "entityCf", columns = mapper.columns)
+          keyspace, "entityCf", columns = mapper.columns
+        )
         val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
         schemaLoader.dropSchema()
         schemaLoader.loadSchema()
@@ -153,7 +154,8 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       val cluster = TestClusterCtx.cluster
       val keyspace = cluster.getKeyspace("EntityMapperSpecIdRWN")
       val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-        keyspace, "entityCf", columns = mapper.columns)
+        keyspace, "entityCf", columns = mapper.columns
+      )
       val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
       schemaLoader.dropSchema()
       schemaLoader.loadSchema()
@@ -175,7 +177,8 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       val cluster = TestClusterCtx.cluster
       val keyspace = cluster.getKeyspace("EntityMapperSpecIdRWE")
       val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-        keyspace, "entityCf", columns = mapper.columns)
+        keyspace, "entityCf", columns = mapper.columns
+      )
       val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
       schemaLoader.dropSchema()
       schemaLoader.loadSchema()

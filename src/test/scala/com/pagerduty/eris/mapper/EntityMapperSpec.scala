@@ -27,15 +27,10 @@
 
 package com.pagerduty.eris.mapper
 
-import com.pagerduty.eris.schema.SchemaLoader
-import com.pagerduty.eris._
-import org.scalatest.{ Matchers, FreeSpec }
-import com.pagerduty.mapper.annotations._
+import com.pagerduty.eris.{ ColumnModel, TimeUuid }
 import com.pagerduty.eris.serializers._
-import FutureConversions._
-import scala.concurrent.duration._
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
+import com.pagerduty.mapper.annotations._
+import org.scalatest.{ Matchers, FreeSpec }
 
 package test {
   @Entity @Ttl(seconds = 40) case class SimpleEntityWithId(
@@ -74,126 +69,6 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       type Entity = test.SimpleEntityWithId
       val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
       mapper.columns should contain allOf (ColumnModel[String]("f0"), ColumnModel[Int]("f1"))
-    }
-
-    "when there is Id" - {
-      type Entity = test.SimpleEntityWithId
-      val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
-      val id = TimeUuid()
-      val entity = new Entity(id, "val1", 1, "t1")
-
-      "retrieve Id" in {
-        val foundId = mapper.getId(entity)
-        foundId shouldBe Some(id)
-      }
-
-      "write/read entity" in {
-        val cluster = TestClusterCtx.cluster
-        val keyspace = cluster.getKeyspace("EntityMapperSpecId")
-        val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-          keyspace, "entityCf", columns = mapper.columns
-        )
-        val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
-        schemaLoader.dropSchema()
-        schemaLoader.loadSchema()
-
-        val mutationBatch = keyspace.prepareMutationBatch()
-        val rowMutation = mutationBatch.withRow(cfModel.columnFamily, id)
-        mapper.write(id, entity, rowMutation)
-        Await.result(mutationBatch.executeAsync(), 5.seconds)
-
-        val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-        val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
-        val loaded = Await.result(readFuture, 5.seconds)
-
-        loaded shouldBe Some(entity.copy(transient = "defaultTransient"))
-      }
-    }
-
-    "when there is no Id" - {
-      type Entity = test.SimpleEntityWithoutId
-      val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
-      val id = TimeUuid()
-      val entity = new Entity("val1", 1, "t1")
-
-      "return None for Id" in {
-        val foundId = mapper.getId(entity)
-        foundId shouldBe None
-      }
-
-      "write/read entity" in {
-        val cluster = TestClusterCtx.cluster
-        val keyspace = cluster.getKeyspace("EntityMapperSpecId")
-        val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-          keyspace, "entityCf", columns = mapper.columns
-        )
-        val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
-        schemaLoader.dropSchema()
-        schemaLoader.loadSchema()
-
-        val mutationBatch = keyspace.prepareMutationBatch()
-        val rowMutation = mutationBatch.withRow(cfModel.columnFamily, id)
-        mapper.write(id, entity, rowMutation)
-        Await.result(mutationBatch.executeAsync(), 5.seconds)
-
-        val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-        val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
-        val loaded = Await.result(readFuture, 5.seconds)
-
-        loaded shouldBe Some(entity.copy(transient = "defaultTransient"))
-      }
-    }
-  }
-
-  "Adapters should" - {
-    type Entity = test.SimpleEntityWithoutId
-    val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
-    val id = TimeUuid()
-
-    "write/read null fields correctly" in {
-      val cluster = TestClusterCtx.cluster
-      val keyspace = cluster.getKeyspace("EntityMapperSpecIdRWN")
-      val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-        keyspace, "entityCf", columns = mapper.columns
-      )
-      val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
-      schemaLoader.dropSchema()
-      schemaLoader.loadSchema()
-
-      val entity = new Entity(null, 1, "t1")
-      val mutationBatch = keyspace.prepareMutationBatch()
-      val rowMutation = mutationBatch.withRow(cfModel.columnFamily, id)
-      mapper.write(id, entity, rowMutation)
-      Await.result(mutationBatch.executeAsync(), 5.seconds)
-
-      val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-      val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
-      val loaded = Await.result(readFuture, 5.seconds)
-
-      loaded shouldBe Some(entity.copy(field0 = "default0", transient = "defaultTransient"))
-    }
-
-    "write/read fields serialized as empty byte buffer correctly" in {
-      val cluster = TestClusterCtx.cluster
-      val keyspace = cluster.getKeyspace("EntityMapperSpecIdRWE")
-      val cfModel = ColumnFamilyModel[TimeUuid, String, String](
-        keyspace, "entityCf", columns = mapper.columns
-      )
-      val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
-      schemaLoader.dropSchema()
-      schemaLoader.loadSchema()
-
-      val entity = new Entity("", 1, "t1")
-      val mutationBatch = keyspace.prepareMutationBatch()
-      val rowMutation = mutationBatch.withRow(cfModel.columnFamily, id)
-      mapper.write(id, entity, rowMutation)
-      Await.result(mutationBatch.executeAsync(), 5.seconds)
-
-      val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-      val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
-      val loaded = Await.result(readFuture, 5.seconds)
-
-      loaded shouldBe Some(entity.copy(transient = "defaultTransient"))
     }
   }
 }

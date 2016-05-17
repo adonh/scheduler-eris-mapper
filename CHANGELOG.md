@@ -1,3 +1,8 @@
+1.6.2
+========
+
+  * Separated integration tests
+
 1.6.1
 ========
 

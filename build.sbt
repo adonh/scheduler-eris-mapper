@@ -4,6 +4,8 @@ name := "eris-mapper"
 
 scalaVersion := "2.10.4"
 
+crossScalaVersions := Seq("2.10.4", "2.11.7")
+
 resolvers += "bintray-pagerduty-oss-maven" at "https://dl.bintray.com/pagerduty/oss-maven"
 
 // Prevents logging configuration from being included in the test jar.

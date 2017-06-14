@@ -35,12 +35,8 @@ import scala.util.control.NonFatal
 /**
   * Eris implementation of [[MutationAdapter]].
   */
-private[mapper] class ErisMutationAdapter(mutation: ColumnListMutation[String])
-    extends MutationAdapter {
-  private def serialize(targetId: Any,
-                        colName: String,
-                        serializer: Any,
-                        value: Any): ByteBuffer = {
+private[mapper] class ErisMutationAdapter(mutation: ColumnListMutation[String]) extends MutationAdapter {
+  private def serialize(targetId: Any, colName: String, serializer: Any, value: Any): ByteBuffer = {
     try {
       val usableSerializer = serializer.asInstanceOf[Serializer[Any]]
       usableSerializer.toByteBuffer(value)
@@ -58,11 +54,7 @@ private[mapper] class ErisMutationAdapter(mutation: ColumnListMutation[String])
     }
   }
 
-  def insert(targetId: Any,
-             colName: String,
-             serializer: Any,
-             value: Any,
-             ttlSeconds: Option[Int]): Unit = {
+  def insert(targetId: Any, colName: String, serializer: Any, value: Any, ttlSeconds: Option[Int]): Unit = {
     val bytes = serialize(targetId, colName, serializer, value)
     type Integer = java.lang.Integer
     val nullableTttl: Integer = ttlSeconds.map(i => i: Integer).orNull

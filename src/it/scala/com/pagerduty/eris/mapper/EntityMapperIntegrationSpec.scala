@@ -43,16 +43,14 @@ package test {
       @Id id: TimeUuid,
       @Column(name = "f0") field0: String,
       @Column(name = "f1") field1: Int,
-      transient: String
-  ) {
+      transient: String) {
     def this() = this(null, "default0", 0, "defaultTransient")
   }
 
   @Entity case class SimpleEntityWithoutId(
       @Column(name = "f0") field0: String,
       @Column(name = "f1") field1: Int,
-      transient: String
-  ) {
+      transient: String) {
     def this() = this("default0", 0, "defaultTransient")
   }
 }
@@ -61,8 +59,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
   "EntityMapper should" - {
     "when there is Id" - {
       type Entity = test.SimpleEntityWithId
-      val mapper =
-        new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
+      val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
       val id = TimeUuid()
       val entity = new Entity(id, "val1", 1, "t1")
 
@@ -79,8 +76,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
           "entityCf",
           columns = mapper.columns
         )
-        val schemaLoader =
-          new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
+        val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
         schemaLoader.dropSchema()
         schemaLoader.loadSchema()
 
@@ -90,8 +86,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
         Await.result(mutationBatch.executeAsync(), 5.seconds)
 
         val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-        val readFuture =
-          query.executeAsync().map(res => mapper.read(id, res.getResult))
+        val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
         val loaded = Await.result(readFuture, 5.seconds)
 
         loaded shouldBe Some(entity.copy(transient = "defaultTransient"))
@@ -100,8 +95,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
 
     "when there is no Id" - {
       type Entity = test.SimpleEntityWithoutId
-      val mapper =
-        new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
+      val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
       val id = TimeUuid()
       val entity = new Entity("val1", 1, "t1")
 
@@ -118,8 +112,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
           "entityCf",
           columns = mapper.columns
         )
-        val schemaLoader =
-          new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
+        val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
         schemaLoader.dropSchema()
         schemaLoader.loadSchema()
 
@@ -129,8 +122,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
         Await.result(mutationBatch.executeAsync(), 5.seconds)
 
         val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-        val readFuture =
-          query.executeAsync().map(res => mapper.read(id, res.getResult))
+        val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
         val loaded = Await.result(readFuture, 5.seconds)
 
         loaded shouldBe Some(entity.copy(transient = "defaultTransient"))
@@ -140,8 +132,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
 
   "Adapters should" - {
     type Entity = test.SimpleEntityWithoutId
-    val mapper =
-      new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
+    val mapper = new EntityMapper[TimeUuid, Entity](classOf[Entity], CommonSerializers)
     val id = TimeUuid()
 
     "write/read null fields correctly" in {
@@ -152,8 +143,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
         "entityCf",
         columns = mapper.columns
       )
-      val schemaLoader =
-        new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
+      val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
       schemaLoader.dropSchema()
       schemaLoader.loadSchema()
 
@@ -164,12 +154,10 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       Await.result(mutationBatch.executeAsync(), 5.seconds)
 
       val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-      val readFuture =
-        query.executeAsync().map(res => mapper.read(id, res.getResult))
+      val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
       val loaded = Await.result(readFuture, 5.seconds)
 
-      loaded shouldBe Some(
-        entity.copy(field0 = "default0", transient = "defaultTransient"))
+      loaded shouldBe Some(entity.copy(field0 = "default0", transient = "defaultTransient"))
     }
 
     "write/read fields serialized as empty byte buffer correctly" in {
@@ -180,8 +168,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
         "entityCf",
         columns = mapper.columns
       )
-      val schemaLoader =
-        new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
+      val schemaLoader = new SchemaLoader(cluster, Set(cfModel.columnFamilyDef(cluster)))
       schemaLoader.dropSchema()
       schemaLoader.loadSchema()
 
@@ -192,8 +179,7 @@ class EntityMapperSpec extends FreeSpec with Matchers {
       Await.result(mutationBatch.executeAsync(), 5.seconds)
 
       val query = keyspace.prepareQuery(cfModel.columnFamily).getKey(id)
-      val readFuture =
-        query.executeAsync().map(res => mapper.read(id, res.getResult))
+      val readFuture = query.executeAsync().map(res => mapper.read(id, res.getResult))
       val loaded = Await.result(readFuture, 5.seconds)
 
       loaded shouldBe Some(entity.copy(transient = "defaultTransient"))

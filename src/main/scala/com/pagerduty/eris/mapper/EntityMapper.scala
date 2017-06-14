@@ -41,8 +41,7 @@ import com.pagerduty.mapper._
 class EntityMapper[Id, Entity](
     entityClass: Class[Entity],
     registeredSerializers: Map[Class[_], Serializer[_]],
-    customMappers: Map[Class[_ <: Annotation], Mapping => Mapping] = Map.empty
-) {
+    customMappers: Map[Class[_ <: Annotation], Mapping => Mapping] = Map.empty) {
 
   /**
     * Entity mapping that handles translation of individual fields.
@@ -83,11 +82,8 @@ class EntityMapper[Id, Entity](
       entity: Entity,
       mutation: ColumnListMutation[String],
       ttlSeconds: Option[Int] = this.ttlSeconds
-  ): Unit = {
-    mapping.write(targetId,
-                  Some(entity),
-                  new ErisMutationAdapter(mutation),
-                  ttlSeconds)
+    ): Unit = {
+    mapping.write(targetId, Some(entity), new ErisMutationAdapter(mutation), ttlSeconds)
   }
 
   /**

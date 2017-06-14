@@ -37,12 +37,8 @@ import scala.util.control.NonFatal
 /**
   * Eris implementation of [[ResultAdapter]]
   */
-private[mapper] class ErisResultAdapter(result: ColumnList[String])
-    extends ResultAdapter {
-  private def deserialize(targetId: Any,
-                          colName: String,
-                          serializer: Any,
-                          column: Column[String]): Any = {
+private[mapper] class ErisResultAdapter(result: ColumnList[String]) extends ResultAdapter {
+  private def deserialize(targetId: Any, colName: String, serializer: Any, column: Column[String]): Any = {
     try {
       val usableSerializer = serializer.asInstanceOf[Serializer[Any]]
       column.getValue(usableSerializer)
@@ -59,9 +55,7 @@ private[mapper] class ErisResultAdapter(result: ColumnList[String])
         )
     }
   }
-  override def get(targetId: Any,
-                   colName: String,
-                   serializer: Any): Option[Any] = {
+  override def get(targetId: Any, colName: String, serializer: Any): Option[Any] = {
     Option(result.getColumnByName(colName)).map { column =>
       deserialize(targetId, colName, serializer, column)
     }

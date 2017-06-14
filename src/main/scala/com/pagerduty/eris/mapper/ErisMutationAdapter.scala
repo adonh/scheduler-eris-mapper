@@ -28,15 +28,14 @@
 package com.pagerduty.eris.mapper
 
 import java.nio.ByteBuffer
-import com.netflix.astyanax.{ Serializer, ColumnListMutation }
-import com.pagerduty.mapper.{ EntityMapperException, MutationAdapter }
+import com.netflix.astyanax.{Serializer, ColumnListMutation}
+import com.pagerduty.mapper.{EntityMapperException, MutationAdapter}
 import scala.util.control.NonFatal
 
 /**
- * Eris implementation of [[MutationAdapter]].
- */
-private[mapper] class ErisMutationAdapter(mutation: ColumnListMutation[String])
-    extends MutationAdapter {
+  * Eris implementation of [[MutationAdapter]].
+  */
+private[mapper] class ErisMutationAdapter(mutation: ColumnListMutation[String]) extends MutationAdapter {
   private def serialize(targetId: Any, colName: String, serializer: Any, value: Any): ByteBuffer = {
     try {
       val usableSerializer = serializer.asInstanceOf[Serializer[Any]]
@@ -44,11 +43,13 @@ private[mapper] class ErisMutationAdapter(mutation: ColumnListMutation[String])
     } catch { // Adding columnName to exception message to simplify debugging.
       case e: ClassCastException =>
         throw new EntityMapperException(
-          s"Incompatible serializer class for column '$colName'.", e
+          s"Incompatible serializer class for column '$colName'.",
+          e
         )
       case NonFatal(e) =>
         throw new EntityMapperException(
-          s"Exception when serializing value for column '$colName' for entity '$targetId'.", e
+          s"Exception when serializing value for column '$colName' for entity '$targetId'.",
+          e
         )
     }
   }

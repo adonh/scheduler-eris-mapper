@@ -23,6 +23,7 @@ fullClasspath in Test ++= update.value.select(configurationFilter("transient"))
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest extend (Test))
+  .settings(inConfig(IntegrationTest)(scalafmtSettings))
   .settings(Defaults.itSettings: _*)
   .settings(
     libraryDependencies ++= Seq("com.pagerduty" %% "eris-core" % "3.0.0",
@@ -33,3 +34,5 @@ lazy val root = (project in file("."))
       "org.scalatest" %% "scalatest" % "3.0.1" % "it,test"
     )
   )
+
+scalafmtOnCompile in ThisBuild := true

@@ -27,26 +27,25 @@
 
 package com.pagerduty.eris.mapper
 
-import com.pagerduty.eris.{ ColumnModel, TimeUuid }
+import com.pagerduty.eris.{ColumnModel, TimeUuid}
 import com.pagerduty.eris.serializers._
 import com.pagerduty.mapper.annotations._
-import org.scalatest.{ Matchers, FreeSpec }
+import org.scalatest.{Matchers, FreeSpec}
 
 package test {
-  @Entity @Ttl(seconds = 40) case class SimpleEntityWithId(
+  @Entity
+  @Ttl(seconds = 40) case class SimpleEntityWithId(
       @Id id: TimeUuid,
       @Column(name = "f0") field0: String,
       @Column(name = "f1") field1: Int,
-      transient: String
-  ) {
+      transient: String) {
     def this() = this(null, "default0", 0, "defaultTransient")
   }
 
   @Entity case class SimpleEntityWithoutId(
       @Column(name = "f0") field0: String,
       @Column(name = "f1") field1: Int,
-      transient: String
-  ) {
+      transient: String) {
     def this() = this("default0", 0, "defaultTransient")
   }
 }

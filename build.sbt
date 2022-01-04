@@ -2,9 +2,9 @@ organization := "com.pagerduty"
 
 name := "eris-mapper"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
-crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.2")
+crossScalaVersions := Seq("2.10.6", "2.11.12", "2.12.2")
 
 resolvers += "bintray-pagerduty-oss-maven" at "https://dl.bintray.com/pagerduty/oss-maven"
 
@@ -26,11 +26,11 @@ lazy val root = (project in file("."))
   .settings(inConfig(IntegrationTest)(scalafmtSettings))
   .settings(Defaults.itSettings: _*)
   .settings(
-    libraryDependencies ++= Seq("com.pagerduty" %% "eris-core" % "3.0.0",
-                                "com.pagerduty" %% "entity-mapper" % "1.0.0"),
+    libraryDependencies ++= Seq("com.pagerduty" %% "eris-core" % "3.0.1",
+                                "com.pagerduty" %% "entity-mapper" % "1.0.1"),
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % "1.0.13" % "transient",
-      "com.pagerduty" %% "eris-core-test-support" % "3.0.0" % "it,test",
+      "com.pagerduty" %% "eris-core-test-support" % "3.0.1" % "it,test",
       "org.scalatest" %% "scalatest" % "3.0.1" % "it,test"
     )
   )
